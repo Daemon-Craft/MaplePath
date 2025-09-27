@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
+import { View } from 'react-native';
 import OnboardingScreen from '../screens/OnboardingScreen';
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
-
-const Stack = createStackNavigator();
 
 interface AuthNavigatorProps {
   onAuthComplete: () => void;
@@ -39,26 +37,18 @@ export default function AuthNavigator({ onAuthComplete }: AuthNavigatorProps) {
   }
 
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      {authFlow === 'login' ? (
-        <Stack.Screen name="Login">
-          {() => (
+      <View style={{ flex: 1 }}>
+        {authFlow === 'login' ? (
             <LoginScreen
-              onLogin={handleLogin}
-              onNavigateToRegister={navigateToRegister}
+                onLogin={handleLogin}
+                onNavigateToRegister={navigateToRegister}
             />
-          )}
-        </Stack.Screen>
-      ) : (
-        <Stack.Screen name="Register">
-          {() => (
+        ) : (
             <RegisterScreen
-              onRegister={handleRegister}
-              onNavigateToLogin={navigateToLogin}
+                onRegister={handleRegister}
+                onNavigateToLogin={navigateToLogin}
             />
-          )}
-        </Stack.Screen>
-      )}
-    </Stack.Navigator>
+        )}
+      </View>
   );
 }

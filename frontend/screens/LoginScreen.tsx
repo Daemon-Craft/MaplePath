@@ -9,6 +9,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+    Image
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -100,9 +101,11 @@ export default function LoginScreen({ onLogin, onNavigateToRegister }: LoginScre
             ]}
           >
             <View style={styles.logoBackground}>
-              <Ionicons name="leaf" size={60} color="#c7372c" />
+              <Image
+                  source={require('../assets/maplepath_sans_bg.png')}
+                    style={{ width: 90, height: 90, resizeMode: 'contain' }}
+              />
             </View>
-            <Text style={styles.logoText}>MaplePath</Text>
             <Text style={styles.welcomeText}>Welcome back!</Text>
           </Animated.View>
 

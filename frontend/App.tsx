@@ -4,6 +4,7 @@ import { StatusBar } from 'expo-status-bar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AuthNavigator from './navigation/AuthNavigator';
 import TabNavigator from './navigation/TabNavigator';
+import LoadingScreen from './components/LoadingScreen';
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -15,9 +16,14 @@ export default function App() {
 
   const checkAuthStatus = async () => {
     try {
+      // Add a small delay to show the loading screen briefly
+      await new Promise(resolve => setTimeout(resolve, 1500));
+
       // Check if user has completed onboarding and is authenticated
       const authToken = await AsyncStorage.getItem('authToken');
       const hasCompletedOnboarding = await AsyncStorage.getItem('hasCompletedOnboarding');
+
+      console.log('Auth check - Token:', !!authToken, 'Onboarding:', hasCompletedOnboarding);
 
       if (authToken && hasCompletedOnboarding) {
         setIsAuthenticated(true);
@@ -50,8 +56,7 @@ export default function App() {
   };
 
   if (isLoading) {
-    // You can add a proper loading screen here
-    return null;
+    return <LoadingScreen />;
   }
 
   return (
