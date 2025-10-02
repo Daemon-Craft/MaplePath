@@ -18,6 +18,14 @@ class Settings(BaseSettings):
     # Firebase
     FIREBASE_CREDENTIALS_PATH: str
 
+    # Google Cloud / Vertex AI
+    GCP_PROJECT_ID: Optional[str] = None
+    GCP_LOCATION: str = "us-central1"
+    VERTEX_AI_MODEL: str = "gemini-1.5-flash"
+
+    # Cloud Storage (for PDF storage)
+    GCS_BUCKET_NAME: Optional[str] = None
+
     class Config:
         env_file = ".env"
 

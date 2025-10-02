@@ -1,7 +1,7 @@
 from datetime import timedelta
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from app.schemas.user import UserLogin, GoogleAuthRequest, Token, User
+from app.schemas.user import UserLogin, UserCreate, GoogleAuthRequest, Token, User
 from app.services.user_service import UserService
 from app.core.security import create_access_token, verify_token
 from app.core.config import settings
@@ -27,6 +27,19 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="User not found"
         )
+    return user
+
+
+@router.post("/register", response_model=User, status_code=status.HTTP_201_CREATED)
+async def register(user_data: UserCreate):
+    """Register a new user with email and password"""
+    if not user_data.password:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Password is required for registration"
+        )
+
+    user = await UserService.create_user(user_data)
     return user
 
 
