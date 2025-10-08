@@ -9,9 +9,11 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  Alert
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import authService from '../services/authService';
 
 interface RegisterScreenProps {
   onRegister: () => void;
@@ -57,6 +59,22 @@ export default function RegisterScreen({ onRegister, onNavigateToLogin }: Regist
   }, []);
 
   const handleRegister = async () => {
+    // Validation
+    if (!firstName || !lastName || !email || !password || !confirmPassword) {
+      Alert.alert('Erreur', 'Veuillez remplir tous les champs');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      Alert.alert('Erreur', 'Les mots de passe ne correspondent pas');
+      return;
+    }
+
+    if (password.length < 6) {
+      Alert.alert('Erreur', 'Le mot de passe doit contenir au moins 6 caractères');
+      return;
+    }
+
     setIsLoading(true);
 
     // Button press animation
@@ -73,11 +91,31 @@ export default function RegisterScreen({ onRegister, onNavigateToLogin }: Regist
       }),
     ]).start();
 
-    // Simulate registration process
-    setTimeout(() => {
+    try {
+      // Appel API d'inscription
+      await authService.register({
+        email,
+        password,
+        first_name: firstName,
+        last_name: lastName,
+      });
+
+      // Inscription réussie
+      Alert.alert(
+        'Succès',
+        'Votre compte a été créé avec succès! Vous pouvez maintenant vous connecter.',
+        [
+          {
+            text: 'OK',
+            onPress: () => onNavigateToLogin(),
+          },
+        ]
+      );
+    } catch (error: any) {
+      Alert.alert('Erreur', error.message || 'Erreur lors de l\'inscription');
+    } finally {
       setIsLoading(false);
-      onRegister();
-    }, 1500);
+    }
   };
 
   return (

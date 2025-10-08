@@ -9,10 +9,12 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-    Image
+  Image,
+  Alert
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import authService from '../services/authService';
 
 interface LoginScreenProps {
   onLogin: () => void;
@@ -54,6 +56,12 @@ export default function LoginScreen({ onLogin, onNavigateToRegister }: LoginScre
   }, []);
 
   const handleLogin = async () => {
+    // Validation
+    if (!email || !password) {
+      Alert.alert('Erreur', 'Veuillez remplir tous les champs');
+      return;
+    }
+
     setIsLoading(true);
 
     // Button press animation
@@ -70,11 +78,18 @@ export default function LoginScreen({ onLogin, onNavigateToRegister }: LoginScre
       }),
     ]).start();
 
-    // Simulate login process
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      // Appel API de connexion
+      const response = await authService.login(email, password);
+
+      // Connexion réussie
+      Alert.alert('Succès', 'Connexion réussie!');
       onLogin();
-    }, 1500);
+    } catch (error: any) {
+      Alert.alert('Erreur', error.message || 'Erreur de connexion');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
